@@ -1,0 +1,26 @@
+@use "sass:color";
+
+// 主题色
+$primary-color: #409eff;
+$success-color: #67c23a;
+$warning-color: #e6a23c;
+$danger-color: #f56c6c;
+
+// 文字颜色
+$text-color-primary: #303133;
+$text-color-regular: #606266;
+$text-color-secondary: #909399;
+
+// 边框颜色
+$border-color-base: #dcdfe6;
+$border-color-light: #e4e7ed;
+
+// 背景颜色
+$background-color-base: #f5f7fa;
+
+// 按钮
+$button-font-size: 14px;
+$button-padding-vertical: 12px;
+$button-padding-horizontal: 20px;
+$button-border-radius: 4px;
+$button-round-border-radius: 20px; 
