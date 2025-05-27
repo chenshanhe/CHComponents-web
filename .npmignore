@@ -8,6 +8,8 @@ dist/
 vue.config.js
 babel.config.js
 .eslintrc.js
+.gitignore
+.DS_Store
 
 # 依赖和缓存
 node_modules/

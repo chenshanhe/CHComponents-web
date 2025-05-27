@@ -1,23 +1,11 @@
-const path = require('path')
-
 module.exports = {
-  // 修改 pages 入口
+  // 只保留开发和演示页面相关配置
   pages: {
     index: {
-      entry: 'src/main.js', // 开发环境入口
+      entry: 'src/main.js',
       template: 'public/index.html',
       filename: 'index.html'
     }
   },
-  // 扩展 webpack 配置
-  chainWebpack: config => {
-    // 库模式不打包公共依赖
-    config.externals({
-      vue: 'Vue',
-      'element-ui': 'ELEMENT'
-    })
-  },
-  css: {
-    extract: false // 不提取 CSS 到单独文件
-  }
+  productionSourceMap: false
 } 

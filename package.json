@@ -1,21 +1,20 @@
 {
   "name": "ch-components-web",
-  "version": "0.1.0",
-  "description": "Vue 2.x 组件库",
-  "main": "lib/index.js",
-  "module": "lib/index.esm.js",
-  "unpkg": "lib/index.umd.min.js",
+  "version": "0.2.0",
+  "description": "基于 Vue 2.x + Element UI的桌面端组件库",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "unpkg": "lib/ch-components-web.umd.min.js",
+  "style": "src/styles/index.scss",
   "files": [
-    "lib",
     "src",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "build:lib": "vue-cli-service build --target lib --name ch-components src/index.js",
-    "prepublishOnly": "npm run build:lib"
+    "build": "vue-cli-service build"
   },
   "engines": {
     "node": ">=14.18.0"
@@ -52,6 +51,7 @@
     "vue-template-compiler": "^2.6.14"
   },
   "peerDependencies": {
-    "vue": "^2.6.14"
+    "vue": "^2.6.14",
+    "element-ui": "^2.15.14"
   }
 }
