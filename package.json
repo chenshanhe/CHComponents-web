@@ -14,7 +14,9 @@
   ],
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "docs:dev": "vuepress dev .",
+    "docs:build": "vuepress build ."
   },
   "engines": {
     "node": ">=14.18.0"
@@ -38,20 +40,24 @@
     "url": "https://github.com/chenshanhe/CHComponents-web/issues"
   },
   "dependencies": {
-    "vue": "^2.6.14",
     "element-ui": "^2.15.14",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "vue": "^2.6.14",
+    "vuepress-plugin-demo-block": "^0.7.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "babel-eslint": "^10.1.0",
+    "@vuepress/plugin-back-to-top": "1.9.7",
+    "@vuepress/plugin-medium-zoom": "1.9.7",
+    "markdown-it-container": "^4.0.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.14"
+    "vue-template-compiler": "^2.6.14",
+    "vuepress": "1.9.7",
+    "vuepress-plugin-demo-container": "^0.2.0"
   },
   "peerDependencies": {
-    "vue": "^2.6.14",
-    "element-ui": "^2.15.14"
+    "element-ui": "^2.15.14",
+    "vue": "^2.6.14"
   }
 }

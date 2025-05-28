@@ -59,67 +59,14 @@ Vue.use(ElementUI)
 Vue.use(CHComponentsWeb)
 ```
 
-
-### 按需加载（使用 babel-plugin-import）
-
-1. 安装插件：
-```bash
-npm install babel-plugin-import -D
-```
-
-2. 配置 babel.config.js：
-```js
-module.exports = {
-  plugins: [
-    [
-      'import',
-      {
-        libraryName: 'ch-components-web',
-        libraryDirectory: 'src/components',
-        style: false
-      }
-    ]
-  ]
-}
-```
-
-3. 使用组件：
-```js
-import Vue from 'vue'
-import { Select, Form } from 'ch-components-web'
-
-Vue.use(Select)
-Vue.use(Form)
-```
-
 ## 🛠️ 开发
 
-```bash
-# 安装依赖
-npm install
+## 📖 文档开发与预览
 
-# 启动开发服务器
-npm run dev
-
-# 构建演示页面
-npm run build
-```
-
-## 📦 发布
+本项目文档基于 VuePress 搭建，支持 Vue 示例实时预览。
 
 ```bash
-# 发布到 npm
-npm publish
+npm run docs:dev
 ```
 
-## 📄 License
-
-MIT
-
-## 🤝 贡献
-
-欢迎提交 Issue 和 Pull Request！
-
-## 📞 联系
-
-如有问题，请提交 [Issue](https://github.com/chenshanhe/CHComponents-web/issues)。 
+运行上述命令后，访问本地提示的地址即可查看组件文档和示例。

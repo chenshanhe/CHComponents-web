@@ -54,7 +54,6 @@ export default {
     settings: {
       type: Array,
       default: () => [],
-      required: true,
       validator: (value) => {
         return value.every((item) => {
           if (!item.type || !constants.TYPES.includes(item.type)) {
