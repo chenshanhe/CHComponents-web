@@ -24,6 +24,13 @@
     :default-first-option="defaultFirstOption"
     :popper-append-to-body="popperAppendToBody"
     :automatic-dropdown="automaticDropdown"
+    @change="handleEvent('change', $event)"
+    @visible-change="handleEvent('visible-change', $event)"
+    @remove-tag="handleEvent('remove-tag', $event)"
+    @clear="handleEvent('clear', $event)"
+    @blur="handleEvent('blur', $event)"
+    @focus="handleEvent('focus', $event)"
+    @input="handleEvent('input', $event)"
   >
     <el-option
       v-for="item in selectOptions"
@@ -37,8 +44,10 @@
 
 <script>
 import * as constants from "./constants/index";
+import FormItemMixins from "../Mixins/FormItemMixins";
 export default {
   name: "ChSelect",
+  mixins: [FormItemMixins],
   props: {
     options: {
       type: Array,
@@ -158,16 +167,21 @@ export default {
 
   data() {
     return {
-      modelValue: null,
-      selectOptions: this.options,
+      selectOptions: [...this.options],
     };
+  },
+  watch: {
+    options: {
+      handler(newOptions) {
+        this.selectOptions = [...newOptions];
+      },
+      deep: true,
+      immediate: true
+    }
   },
   methods: {
     setOptions(options) {
-      this.selectOptions = options;
-    },
-    setProps(props) {
-      this.props = props;
+      this.selectOptions = options
     },
   },
 };

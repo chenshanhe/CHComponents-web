@@ -32,23 +32,34 @@
     >
       <!-- 动态组件 -->
       <component
-        :ref="item.ref"
-        :is="TYPES_LAYOUT[item.type]"
+        :ref="'component_' + (item.ref || item.prop) + '_' + id_"
+        :is="item.type === 'component' ? item.component : TYPES_LAYOUT[item.type]"
         v-model="formObj[item.prop]"
         v-bind="item.itemOptions"
+        @CH_FORM_HANDLE_EVENT="handleComponentEvent($event, item)"
       ></component>
     </el-form-item>
-    <el-button @click="onSubmit">submit</el-button>
   </el-form>
 </template>
   <script>
 import * as constants from "./constants/index";
 import ChSelect from "../Select/index.vue";
+import ChDatePicker from "../DatePicker/index.vue";
+import ChDateTimePicker from "../DateTimePicker/index.vue";
+import ChLink from "../Link/index.vue";
+import ChButton from "../Button/index.vue";
+import CommonMixins from "../Mixins/CommonMixins";
+
 import _ from "lodash";
 export default {
   name: "ChForm",
+  mixins: [CommonMixins],
   components: {
     ChSelect,
+    ChDatePicker,
+    ChDateTimePicker,
+    ChLink,
+    ChButton,
   },
   props: {
     settings: {
@@ -58,12 +69,14 @@ export default {
         return value.every((item) => {
           if (!item.type || !constants.TYPES.includes(item.type)) {
             console.error(
-              `[CHForm][propError]:[settings.${item.label||item.prop}.type] = ${item.type} is required and must be in`,
+              `[CHForm][propError]:[settings.${
+                item.label || item.prop
+              }.type] = ${item.type} is required and must be in`,
               _.join(constants.TYPES, ",")
             );
             return false;
           }
-          if(item.prop == undefined){
+          if (item.prop == undefined) {
             console.error(
               `[CHForm][propError]:[settings.${item.label}.prop] = ${item.prop} is required`
             );
@@ -83,7 +96,7 @@ export default {
       validator: (value) => {
         if (!constants.LABEL_POSITIONS.includes(value)) {
           console.error(
-            "[CHForm][propError]:[labelPosition] is required and must be in",
+            `[CHForm][propError]:[settings.labelPosition] = ${value} is required and must be in`,
             _.join(constants.LABEL_POSITIONS, ",")
           );
           return false;
@@ -169,16 +182,41 @@ export default {
       {}
     );
     this.resetBackUp = _.cloneDeep(this.formObj);
+    if (this.created && _.isFunction(this.created)) {
+      this.created();
+    }
   },
   methods: {
-    onSubmit() {
-      this.getFormRef().validate((valid) => {
-        if (valid) {
-          this.$emit("submit", this.formObj);
-        } else {
-          this.$emit("submitError", valid);
-        }
+    validate() {
+      // 异步验证改为同步
+      return new Promise((resolve, reject) => {
+        this.getFormRef().validate((valid) => {
+          if (valid) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        });
       });
+    },
+    submit() {
+      this.$emit("submit", this.formObj);
+      return this.formObj;
+    },
+    validateAndSubmit() {
+      let valid = this.validate();
+      if (valid) {
+        return this.submit();
+      } else {
+        return false;
+      }
+    },
+    resetFields() {
+      this.getFormRef().resetFields();
+      console.log("resetFields", this.formObj);
+    },
+    getDataByProp(prop) {
+      return _.find(this.settings, (item) => item.prop === prop);
     },
     getFormRef() {
       return this.$refs[`form_${this.id_}`];
@@ -187,20 +225,50 @@ export default {
       this.formObj = _.cloneDeep(this.resetBackUp);
     },
     getRef(refName) {
-      console.log(this.$refs);
-      return _.get(this.$refs,refName+'[0]')
+      let setting = this.getDataByProp(refName);
+      if (setting) {
+        refName = setting.ref || setting.prop;
+      }
+      return _.get(this.$refs, "component_" + refName + "_" + this.id_ + "[0]");
     },
     action(refName, actionName, ...args) {
       const ref = this.getRef(refName);
-      console.log(ref);
       if (ref) {
         ref[actionName](...args);
       } else {
-        console.error(`[CHForm][actionError]:[refName] = ${refName} is not found`);
+        console.error(
+          `[CHForm][actionError]:[refName] = ${refName} is not found`
+        );
+      }
+    },
+    handleComponentEvent(event, item) {
+      let eventName = (item.ref || item.prop) + "_" + event.eventName;
+      this.$emit(eventName, event.eventBody);
+    },
+    getSettingParam(path) {
+      return _.get(this.settings, path);
+    },
+    setParam(path, value) {
+      let option = this.getSettingParam(path);
+      if (option) {
+        option = value;
       }
     },
   },
 };
 </script>
   <style scoped>
+.el-form--inline .el-form-item {
+  vertical-align: top;
+}
+
+.el-form-item__content {
+  display: flex;
+  align-items: center;
+}
+
+/* 确保不同高度的组件能够对齐 */
+.el-form--inline .el-form-item__content {
+  vertical-align: top;
+}
 </style>
