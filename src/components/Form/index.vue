@@ -106,7 +106,7 @@ export default {
     },
     labelWidth: {
       type: String,
-      default: "auto",
+      default: "",
     },
     labelSuffix: {
       type: String,
