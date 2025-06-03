@@ -33,7 +33,9 @@
       <!-- 动态组件 -->
       <component
         :ref="'component_' + (item.ref || item.prop) + '_' + id_"
-        :is="item.type === 'component' ? item.component : TYPES_LAYOUT[item.type]"
+        :is="
+          item.type === 'component' ? item.component : TYPES_LAYOUT[item.type]
+        "
         v-model="formObj[item.prop]"
         v-bind="item.itemOptions"
         @CH_FORM_HANDLE_EVENT="handleComponentEvent($event, item)"
@@ -62,6 +64,10 @@ export default {
     ChButton,
   },
   props: {
+    model: {
+      type: Object,
+      default: () => {},
+    },
     settings: {
       type: Array,
       default: () => [],
@@ -169,12 +175,23 @@ export default {
       resetBackUp: {},
     };
   },
+  watch: {
+    formObj: {
+      handler(newVal) {
+        this.$emit("update:model", newVal);
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   created() {
     // 初始化formObj
     this.formObj = _.reduce(
       this.settings,
       (acc, field) => {
-        acc[field.prop] = _.has(field, "defaultValue")
+        acc[field.prop] = _.has(this.model, field.prop)
+          ? this.model[field.prop]
+          : _.has(field, "defaultValue")
           ? field.defaultValue
           : constants.TYPES_DEFAULT_VALUE[field.type] || null;
         return acc;
@@ -203,8 +220,8 @@ export default {
       this.$emit("submit", this.formObj);
       return this.formObj;
     },
-    validateAndSubmit() {
-      let valid = this.validate();
+    async validateAndSubmit() {
+      let valid = await this.validate();
       if (valid) {
         return this.submit();
       } else {
@@ -212,8 +229,7 @@ export default {
       }
     },
     resetFields() {
-      this.getFormRef().resetFields();
-      console.log("resetFields", this.formObj);
+      return this.getFormRef().resetFields();
     },
     getDataByProp(prop) {
       return _.find(this.settings, (item) => item.prop === prop);
@@ -224,35 +240,16 @@ export default {
     resetForm() {
       this.formObj = _.cloneDeep(this.resetBackUp);
     },
-    getRef(refName) {
+    getComponentRef(refName) {
       let setting = this.getDataByProp(refName);
       if (setting) {
         refName = setting.ref || setting.prop;
       }
       return _.get(this.$refs, "component_" + refName + "_" + this.id_ + "[0]");
     },
-    action(refName, actionName, ...args) {
-      const ref = this.getRef(refName);
-      if (ref) {
-        ref[actionName](...args);
-      } else {
-        console.error(
-          `[CHForm][actionError]:[refName] = ${refName} is not found`
-        );
-      }
-    },
     handleComponentEvent(event, item) {
-      let eventName = (item.ref || item.prop) + "_" + event.eventName;
+      let eventName = item.prop + "_" + event.eventName;
       this.$emit(eventName, event.eventBody);
-    },
-    getSettingParam(path) {
-      return _.get(this.settings, path);
-    },
-    setParam(path, value) {
-      let option = this.getSettingParam(path);
-      if (option) {
-        option = value;
-      }
     },
   },
 };

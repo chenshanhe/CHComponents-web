@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   title: 'CHComponents',
   description: 'CHComponents 组件库文档',
@@ -52,9 +54,20 @@ module.exports = {
         componentsDir: './docs'
       }
     ],
-    'demo-container'
+    'demo-container',
+    'vuepress-plugin-element-tabs'
   ],
   markdown: {
     lineNumbers: true,
+    toc: {
+      includeLevel: [2, 3]
+    }
+  },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, '../src')
+      }
+    }
   }
 } 

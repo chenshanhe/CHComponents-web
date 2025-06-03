@@ -1,10 +1,16 @@
 # CH Components
 
-基于 Vue 2.x + Element UI的桌面端组件库
+🚀 基于 Vue 2.x + Element UI的桌面端组件库  
+✨ 运用 JSON 配置快速完成表单搭建  
+💪 简单易用、灵活可扩展  
+🎨 提供丰富的组件和样式  
+🔧 开箱即用的配置能力
 
 ## 📦 安装
 
-首先安装必要的依赖：
+> 本组件库依赖于 `vue` 和 `element-ui`，请确保项目中已安装这两个依赖。
+
+如未安装，请先执行：
 
 ```bash
 npm install vue@^2.6.14 element-ui@^2.15.14
@@ -47,19 +53,14 @@ Vue.component(Select.name, Select)
 Vue.component(Form.name, Form)
 ```
 
-### CommonJS 环境
+## 🛠️ 本地开发
 
-```js
-const Vue = require('vue')
-const ElementUI = require('element-ui')
-const CHComponentsWeb = require('ch-components-web')
+克隆项目后，安装依赖并启动开发环境：
 
-
-Vue.use(ElementUI)
-Vue.use(CHComponentsWeb)
+```bash
+npm install
+npm run dev
 ```
-
-## 🛠️ 开发
 
 ## 📖 文档开发与预览
 
@@ -70,3 +71,7 @@ npm run docs:dev
 ```
 
 运行上述命令后，访问本地提示的地址即可查看组件文档和示例。
+
+---
+
+<p align="right" style="font-size: 12px; color: #888;">作者：chensh</p>

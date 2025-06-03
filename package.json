@@ -1,6 +1,6 @@
 {
   "name": "ch-components-web",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "基于 Vue 2.x + Element UI的桌面端组件库",
   "main": "src/index.js",
   "module": "src/index.js",
@@ -40,21 +40,23 @@
     "url": "https://github.com/chenshanhe/CHComponents-web/issues"
   },
   "dependencies": {
-    "element-ui": "^2.15.14",
-    "lodash": "^4.17.21",
-    "vue": "^2.6.14"
+    "dayjs": "^1.11.13",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@vue/cli-service": "~4.5.0",
     "@vuepress/plugin-back-to-top": "1.9.7",
     "@vuepress/plugin-medium-zoom": "1.9.7",
+    "core-js": "2",
+    "element-ui": "^2.15.14",
     "markdown-it-container": "^4.0.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.14",
     "vuepress": "1.9.7",
     "vuepress-plugin-demo-block": "^0.7.2",
-    "vuepress-plugin-demo-container": "^0.2.0"
+    "vuepress-plugin-demo-container": "^0.2.0",
+    "vuepress-plugin-element-tabs": "^0.2.8"
   },
   "peerDependencies": {
     "element-ui": "^2.15.14",
