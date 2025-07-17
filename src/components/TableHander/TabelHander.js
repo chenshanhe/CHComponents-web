@@ -1,10 +1,10 @@
 
 export default class TabelHander {
-  #log = (...args) => {
+  _log = (...args) => {
     console.log('[TabelHander]', ...args);
   }
   constructor(tableName, options) {
-    this.#log('TabelHander init', tableName, options);
+    this._log('TabelHander init', tableName, options);
 
     //tableName为表名，用于设置vue实例的值，如VUE_QueryFormPath等
     this.tableName = tableName;
@@ -340,7 +340,7 @@ export default class TabelHander {
    * @param {*} _TableMixinsId
    */
   tableDeleteRow = (_TableMixinsId) => {
-    this.#log('deleteRow', _TableMixinsId);
+    this._log('deleteRow', _TableMixinsId);
     let index = _.findIndex(this.tableData, (item) => {
       return item._TableMixinsId === _TableMixinsId
     })

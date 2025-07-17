@@ -1,6 +1,6 @@
 {
   "name": "ch-components-web",
-  "version": "0.3.2",
+  "version": "0.3.4",
   "description": "基于 Vue 2.x + Element UI的桌面端组件库",
   "main": "src/index.js",
   "module": "src/index.js",
