@@ -9,6 +9,7 @@ module.exports = {
       { text: '首页', link: '/' },
       { text: '更新日志', link: '/CHANGELOG.html' },
       { text: '组件', link: '/docs/components/' },
+      { text: '表格辅助', link: '/docs/tableHandler/' },
       { text: 'github', link: 'https://github.com/chenshanhe/CHComponents-web' },
       { text: 'npm', link: 'https://www.npmjs.com/package/ch-components-web' },
       {
@@ -42,6 +43,19 @@ module.exports = {
               ]
             }
             // 其他组件将自动添加
+          ]
+        }
+      ],
+      '/docs/tableHandler/': [
+        {
+          title: '表格辅助',
+          collapsable: false,
+          children: [
+            ['/docs/tableHandler/', '表格辅助'],
+            ['/docs/tableHandler/Introduction', '简介'],
+            ['/docs/tableHandler/QuicklyUse', '快速使用'],
+            ['/docs/tableHandler/API', '配置方法'],
+            ['/docs/tableHandler/BestUse', '使用实例']
           ]
         }
       ]

@@ -6,6 +6,7 @@ import _ from 'lodash'
 // 导入组件
 import Form from './components/Form'
 import Select from './components/Select'
+import TableHander from './components/TableHander'
 
 // 组件列表
 const components = [
@@ -24,6 +25,9 @@ const install = function(Vue) {
   components.forEach(component => {
     Vue.component(component.name, component)
   })
+  
+  // 注册 TableHander
+  Vue.use(TableHander)
 }
 
 // 判断是否直接引入文件
@@ -34,5 +38,6 @@ if (typeof window !== 'undefined' && window.Vue) {
 export default {
   install,
   Select,
-  Form
+  Form,
+  TableHander
 } 

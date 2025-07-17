@@ -50,6 +50,8 @@ import ChDatePicker from "../DatePicker/index.vue";
 import ChDateTimePicker from "../DateTimePicker/index.vue";
 import ChLink from "../Link/index.vue";
 import ChButton from "../Button/index.vue";
+import ChTreeSelect from "../TreeSelect/index.vue";
+
 import CommonMixins from "../Mixins/CommonMixins";
 
 import _ from "lodash";
@@ -62,6 +64,7 @@ export default {
     ChDateTimePicker,
     ChLink,
     ChButton,
+    ChTreeSelect,
   },
   props: {
     model: {
@@ -229,6 +232,7 @@ export default {
       }
     },
     resetFields() {
+      this.resetForm()
       return this.getFormRef().resetFields();
     },
     getDataByProp(prop) {

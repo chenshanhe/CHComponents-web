@@ -1,5 +1,5 @@
 const TYPES = [
-    "input","select","datePicker","dateTimePicker","link","button","component"
+    "input","select","datePicker","dateTimePicker","link","button","component","treeSelect"
 ]
 const TYPES_LAYOUT = {
     input:"el-input",
@@ -7,7 +7,8 @@ const TYPES_LAYOUT = {
     datePicker:"ChDatePicker",
     dateTimePicker:"ChDateTimePicker",
     link:"ChLink",
-    button:"ChButton"
+    button:"ChButton",
+    treeSelect:"ChTreeSelect"
 }
 const TYPES_DEFAULT_VALUE ={
     input:"",
