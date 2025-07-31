@@ -1,7 +1,7 @@
-import Select from './index.vue'
+import TreeSelect from './index.vue'
 
-Select.install = function(Vue) {
-  Vue.component(Select.name, Select)
+TreeSelect.install = function(Vue) {
+  Vue.component(TreeSelect.name, TreeSelect)
 }
 
-export default Select 
+export default TreeSelect 

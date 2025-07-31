@@ -19,7 +19,7 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 import _ from "lodash";
-import { pareseShortcuts, isUnit } from "@/utils/CHUtils/DateUtil";
+import { pareseShortcuts, isUnit } from "../../utils/ChUtils/DateUtil";
 import FormItemMixins from "../Mixins/FormItemMixins";
 export default {
   name: "ChDateTimePicker",

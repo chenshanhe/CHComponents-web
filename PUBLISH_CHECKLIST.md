@@ -64,3 +64,63 @@
 - 定期更新依赖版本
 - 保持文档同步更新
 - 遵循语义化版本规范 
+
+# CHComponents-web 发布构建检查流程
+
+## 1. 使用 Node.js 20 环境
+建议使用 nvm 切换到 Node.js 20：
+```bash
+nvm use 20
+```
+
+## 2. 安装依赖
+```bash
+npm install
+```
+
+## 3. 构建产物
+```bash
+npm run build
+```
+构建产物会生成在 `dist/` 目录。
+
+## 4. 检查类型声明
+确保根目录有 `index.d.ts`，内容需导出主插件类型。
+
+## 5. 配置 package.json
+- `main`、`module` 指向 `dist` 目录下的入口文件
+- `types` 指向根目录的 `index.d.ts`
+- `files` 字段如下：
+  ```json
+  "files": [
+    "dist",
+    "index.d.ts",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ]
+  ```
+
+## 6. 检查 .npmignore
+不要屏蔽 `dist/` 和 `index.d.ts`。
+
+## 7. 打包检查
+```bash
+npm pack
+```
+解包检查：
+```bash
+tar -tzvf ch-components-web-*.tgz
+```
+应包含：
+- dist/ 目录及所有构建产物
+- index.d.ts
+- README.md、LICENSE、package.json
+
+## 8. 发布
+```bash
+npm publish
+```
+
+## 9. 下游项目测试
+在新项目中安装并引入，确保无“找不到模块”或类型声明错误。 

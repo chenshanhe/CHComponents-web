@@ -7,5 +7,13 @@ module.exports = {
       filename: 'index.html'
     }
   },
-  productionSourceMap: false
+  productionSourceMap: false,
+  configureWebpack: {
+    externals: {
+      'vue': 'Vue',
+      'element-ui': 'ELEMENT',
+      'lodash': 'lodash',
+      'dayjs': 'dayjs'
+    }
+  }
 } 

@@ -1,7 +1,7 @@
-import Form from './index.vue'
+import DatePicker from './index.vue'
 
-Form.install = function(Vue) {
-  Vue.component(Form.name, Form)
+DatePicker.install = function(Vue) {
+  Vue.component(DatePicker.name, DatePicker)
 }
 
-export default Form
+export default DatePicker

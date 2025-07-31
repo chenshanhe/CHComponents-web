@@ -1,25 +1,25 @@
 {
   "name": "ch-components-web",
-  "version": "0.3.4",
+  "version": "0.3.19",
   "description": "基于 Vue 2.x + Element UI的桌面端组件库",
-  "main": "src/index.js",
-  "module": "src/index.js",
-  "unpkg": "lib/ch-components-web.umd.min.js",
-  "style": "src/styles/index.scss",
+  "main": "dist/ch-components-web.umd.js",
+  "module": "dist/ch-components-web.umd.js",
+  "unpkg": "dist/ch-components-web.umd.min.js",
+  "style": "dist/ch-components-web.css",
+  "types": "index.d.ts",
   "files": [
-    "src",
+    "dist",
+    "index.d.ts",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "docs:dev": "vuepress dev .",
-    "docs:build": "vuepress build ."
+    "build": "vue-cli-service build --target lib --name ch-components-web src/index.js"
   },
   "engines": {
-    "node": ">=14.18.0"
+    "node": ">=14.0.0"
   },
   "keywords": [
     "vue",
@@ -40,26 +40,22 @@
     "url": "https://github.com/chenshanhe/CHComponents-web/issues"
   },
   "dependencies": {
-    "dayjs": "^1.11.13",
-    "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@vue/cli-service": "~4.5.0",
-    "@vuepress/plugin-back-to-top": "1.9.7",
-    "@vuepress/plugin-medium-zoom": "1.9.7",
-    "core-js": "2",
-    "element-ui": "^2.15.14",
-    "markdown-it-container": "^4.0.0",
-    "sass": "^1.26.5",
-    "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.14",
-    "vuepress": "1.9.7",
-    "vuepress-plugin-demo-block": "^0.7.2",
-    "vuepress-plugin-demo-container": "^0.2.0",
-    "vuepress-plugin-element-tabs": "^0.2.8"
+    "@babel/core": "7.24.1",
+    "@babel/plugin-transform-class-properties": "7.24.1",
+    "@babel/preset-env": "7.24.1",
+    "@vue/cli-service": "5.0.8",
+    "element-ui": "2.15.14",
+    "sass": "1.26.5",
+    "sass-loader": "8.0.2",
+    "vue": "2.6.14",
+    "vue-template-compiler": "2.6.14"
   },
   "peerDependencies": {
-    "element-ui": "^2.15.14",
-    "vue": "^2.6.14"
+    "vue": "2.6.14",
+    "element-ui": "2.15.14",
+    "lodash": "4.17.21",
+    "dayjs": "1.11.13"
   }
 }

@@ -1,11 +1,10 @@
 
 export default class TabelHander {
+
   constructor(tableName, options) {
-    // 初始化方法，确保 this 指向正确
     this._log = (...args) => {
       console.log('[TabelHander]', ...args);
-    };
-    
+    }
     this._log('TabelHander init', tableName, options);
 
     //tableName为表名，用于设置vue实例的值，如VUE_QueryFormPath等
@@ -21,6 +20,10 @@ export default class TabelHander {
 
     //当前表单查询时所使用的from对象地址，固定格式为tableNameQueryForm，由mixins自动设置
     this.VUE_QueryFormPath = this.tableName + 'QueryForm';
+    if (options.queryFormPath) {
+      //用户自定义的查询表单路径,可以与其他表格共用表单
+      this.VUE_QueryFormPath = options.queryFormPath;
+    }
 
     //【需提前设置】当前表单查询时所使用的from对象地址，固定格式为tableNameQueryFormRef，需由用户手动绑定，否则清空表单等操作可能失效
     this.VUE_QueryFormRef = '$refs.' + this.tableName + 'QueryFormRef';
@@ -35,6 +38,8 @@ export default class TabelHander {
     this.VUE_METHOD_AfterQueryPath = this.tableName + 'AfterQuery';
     //可提供给用户自定义的方法，固定格式为tableNameExtraReset，在重置时调用，无参数
     this.VUE_METHOD_ExtraResetPath = this.tableName + 'ExtraReset';
+    //可提供给用户自定义的方法，固定格式为tableNameGetParams，在获取请求参数时调用，无参数
+    this.VUE_METHOD_ParamsHandlePath = this.tableName + 'ParamsHandle';
 
     this.options = {
       //是否在mounted时自动获取数据
@@ -44,7 +49,7 @@ export default class TabelHander {
       //需要发送请求时从form中删除的属性（路径）
       formUnset: [],
       //返回数据中list的路径
-      tableDataPath: 'data',
+      tableDataPath: 'object',
       //是否使用分页
       usePager: true,
       //分页模式，false为分页模式，true为limit模式
@@ -52,19 +57,19 @@ export default class TabelHander {
       //可选择的分页大小范围
       pageSizes: [10, 20, 30, 50],
       //返回和请求时的分页当前页的路径
-      currentPagePath: 'currentPage',
+      currentPagePath: 'pager.curPageNum',
       //limit模式下，请求参数中offset的路径
       limitModeOffsetPath: 'offset',
       //limit模式下，请求参数中limit的路径
       limitModeLimitPath: 'limit',
       //返回和请求时的分页大小的路径
-      pageSizePath: 'pageSize',
+      pageSizePath: 'pager.pageSize',
       //返回和请求时的分页总条数的路径
-      totalPath: 'total',
+      totalPath: 'pager.totalCount',
       //返回成功的code
       successCode: "0",
       //返回的code的路径
-      successCodePath: 'code',
+      successCodePath: 'errcode',
       //返回数据中id的路径
       tableIdPath: 'id',
       //删除api接口，接口应该另外定义
@@ -92,39 +97,12 @@ export default class TabelHander {
     this.pageSize = this.options.pageSize || 1
     this.pageSizes = this.options.pageSizes || [10, 20, 30, 50]
 
-    // 初始化所有方法，确保 this 指向正确
-    this.setOptions = this.setOptions.bind(this);
-    this.setVueInstance = this.setVueInstance.bind(this);
-    this.initInMount = this.initInMount.bind(this);
-    this.getList = this.getList.bind(this);
-    this.nextPage = this.nextPage.bind(this);
-    this.lastPage = this.lastPage.bind(this);
-    this.sizeChange = this.sizeChange.bind(this);
-    this.currentChange = this.currentChange.bind(this);
-    this.handleTableSelected = this.handleTableSelected.bind(this);
-    this.handleTableSelectEvent = this.handleTableSelectEvent.bind(this);
-    this.handleTableSelectAllEvent = this.handleTableSelectAllEvent.bind(this);
-    this.clearTableSelection = this.clearTableSelection.bind(this);
-    this.tableRowUp = this.tableRowUp.bind(this);
-    this.tableRowDown = this.tableRowDown.bind(this);
-    this.tableDeleteRow = this.tableDeleteRow.bind(this);
-    this.tableDeleteRows = this.tableDeleteRows.bind(this);
-    this.tableDeleteSelectedRows = this.tableDeleteSelectedRows.bind(this);
-    this.query = this.query.bind(this);
-    this.reset = this.reset.bind(this);
-    this.openCreateOrUpdate = this.openCreateOrUpdate.bind(this);
-    this.deleteSelectedRowsData = this.deleteSelectedRowsData.bind(this);
-    this.deleteRowData = this.deleteRowData.bind(this);
-    this.deleteRowDataByApi = this.deleteRowDataByApi.bind(this);
-    this._getVueValue = this._getVueValue.bind(this);
-    this._setVueValue = this._setVueValue.bind(this);
-    this._handleTableData = this._handleTableData.bind(this);
   }
   /**
    * 设置options,用户可以通过此方法设置options
    * @param {*} options
    */
-  setOptions(options) {
+  setOptions = (options) => {
     this.options = {
       ...this.options,
       ...options,
@@ -134,14 +112,14 @@ export default class TabelHander {
    * 设置vue实例，在TableMixins中自动调用
    * @param {*} vueInstance
    */
-  setVueInstance(vueInstance) {
+  setVueInstance = (vueInstance) => {
     this.vueInstance = vueInstance
   }
   /**
    * 在mounted时自动获取数据，在TableMixins中自动调用
    * @param {*} options
    */
-  initInMount(options = this.options) {
+  initInMount = (options = this.options) => {
     if (options.initInMount) {
       this.getList(options);
     }
@@ -153,30 +131,45 @@ export default class TabelHander {
    * tableNameAfterQuery无参数方法，但用户可以直接对this.tableNameHandler.tableData等数据进行操作
    * @param {*} options
    */
-  async getList(options = this.options) {
+  getParams = (options = this.options) => {
+    let params = _.cloneDeep(this._getVueValue('VUE_QueryFormPath', {}))
+    if (options.usePager) {
+      if (this.currentPage < 1) {
+        this.currentPage = 1
+      }
+      _.set(params, options.currentPagePath, this.currentPage)
+      _.set(params, options.pageSizePath, this.pageSize)
+    }
+    if (options.limitMode) {
+      let offset = _.multiply(this.currentPage - 1, this.pageSize)
+      _.set(params, options.limitModeLimitPath, this.pageSize)
+      _.set(params, options.limitModeOffsetPath, offset)
+    } else {
+      _.set(params, options.currentPagePath, this.currentPage)
+      _.set(params, options.pageSizePath, this.pageSize)
+    }
+    let paramsHandle = this._getVueValue('VUE_METHOD_ParamsHandlePath')
+    if (paramsHandle) {
+      paramsHandle(params)
+    }
+    if (options.formUnset && options.formUnset.length > 0) {
+      _.forEach(options.formUnset, (item) => {
+        _.unset(params, item)
+      });
+    }
+    return params
+  }
+  getList = async (options = this.options) => {
     this.loading = true;
     if (options.singlePageSelect) {
       this.tableSelection = []
     }
     this.tableData = [];
     try {
-      let params = _.cloneDeep(this._getVueValue('VUE_QueryFormPath', {}))
-      if (options.usePager) {
-        if (this.currentPage < 1) {
-          this.currentPage = 1
-        }
-        if (options.limitMode) {
-          let offset = _.multiply(this.currentPage - 1, this.pageSize)
-          _.set(params, options.limitModeLimitPath, this.pageSize)
-          _.set(params, options.limitModeOffsetPath, offset)
-        } else {
-          _.set(params, options.currentPagePath, this.currentPage)
-          _.set(params, options.pageSizePath, this.pageSize)
-        }
-      }
+      let params = this.getParams(options)
       let beforeQuery = this._getVueValue('VUE_METHOD_BeforeQueryPath')
       if (beforeQuery) {
-        beforeQuery(params)
+        beforeQuery()
       }
       if (options.formUnset && options.formUnset.length > 0) {
         _.forEach(options.formUnset, (item) => {
@@ -217,7 +210,7 @@ export default class TabelHander {
   /**
    * 下一页,如果用element等组件，此方法可能不会被调用
    */
-  nextPage() {
+  nextPage = () => {
     if (this.currentPage < _.divide(this.total, this.pageSize)) {
       this.currentPage = _.add(this.currentPage, 1)
       this.getList()
@@ -226,7 +219,7 @@ export default class TabelHander {
   /**
    * 上一页,如果用element等组件，此方法可能不会被调用
    */
-  lastPage() {
+  lastPage = () => {
     if (this.currentPage > 1) {
       this.currentPage--
       this.getList()
@@ -236,7 +229,7 @@ export default class TabelHander {
    * 改变分页大小，可通过@size-change="tableNameHandler.sizeChange"被element组件调用
    * @param {*} size
    */
-  sizeChange(size) {
+  sizeChange = (size) => {
     this.pageSize = size
     this.getList()
   }
@@ -244,7 +237,7 @@ export default class TabelHander {
    * 改变当前页，可通过@current-change="tableNameHandler.currentChange"被element组件调用
    * @param {*} page
    */
-  currentChange(page) {
+  currentChange = (page) => {
     console.log('currentChange', page);
     this.currentPage = page
     this.getList()
@@ -254,7 +247,7 @@ export default class TabelHander {
    * 表格选择是多页联动时，负责在页面变动时控制表格勾选状态的回显
    * @param {*} options
    */
-  handleTableSelected(options = this.options) {
+  handleTableSelected = (options = this.options) => {
     if (!this._getVueValue('VUE_TableRef')) {
       console.warn('[TableHander] please set the tableRef:', this.VUE_TableRef)
       return
@@ -280,7 +273,7 @@ export default class TabelHander {
    * @param {*} row
    * @param {*} options
    */
-  handleTableSelectEvent(selection, row, options = this.options) {
+  handleTableSelectEvent = (selection, row, options = this.options) => {
     if (options.singlePageSelect) {
       this.tableSelection = selection
       return
@@ -309,13 +302,13 @@ export default class TabelHander {
    * @param {*} row
    * @param {*} options
    */
-  handleTableSelectAllEvent(selection, row, options = this.options) {
+  handleTableSelectAllEvent = (selection, row, options = this.options) => {
     if (options.singlePageSelect) {
       this.tableSelection = selection
       return
     }
   }
-  clearTableSelection() {
+  clearTableSelection = () => {
     this.tableSelection = []
     this._getVueValue('VUE_TableRef').clearSelection()
   }
@@ -325,7 +318,7 @@ export default class TabelHander {
    * @param {*} _TableMixinsId
    * @param {*} count 移动的行数
    */
-  tableRowUp(_TableMixinsId,count = 1) {
+  tableRowUp = (_TableMixinsId, count = 1) => {
     let index = _.findIndex(this.tableData, (item) => {
       return item._TableMixinsId === _TableMixinsId
     })
@@ -347,7 +340,7 @@ export default class TabelHander {
    * @param {*} _TableMixinsId
    * @param {*} count 移动的行数
    */
-  tableRowDown(_TableMixinsId,count = 1) {
+  tableRowDown = (_TableMixinsId, count = 1) => {
     let index = _.findIndex(this.tableData, (item) => {
       return item._TableMixinsId === _TableMixinsId
     })
@@ -368,7 +361,7 @@ export default class TabelHander {
    * 注意：table...开头（相关）为纯逻辑操作，后端数据不进行操作
    * @param {*} _TableMixinsId
    */
-  tableDeleteRow(_TableMixinsId) {
+  tableDeleteRow = (_TableMixinsId) => {
     this._log('deleteRow', _TableMixinsId);
     let index = _.findIndex(this.tableData, (item) => {
       return item._TableMixinsId === _TableMixinsId
@@ -382,7 +375,7 @@ export default class TabelHander {
    * 注意：table...开头（相关）为纯逻辑操作，后端数据不进行操作
    * @param {*} _TableMixinsIds
    */
-  tableDeleteRows(_TableMixinsIds) {
+  tableDeleteRows = (_TableMixinsIds) => {
     _.forEach(_TableMixinsIds, (_TableMixinsId) => {
       this.tableDeleteRow(_TableMixinsId)
     })
@@ -391,7 +384,7 @@ export default class TabelHander {
    * 批量删除tableSelection选中的行显示
    * @returns
    */
-  tableDeleteSelectedRows() {
+  tableDeleteSelectedRows = () => {
     if (this.tableSelection.length === 0) {
       this.vueInstance.$message.warning('请选择要删除的数据')
       return
@@ -406,7 +399,7 @@ export default class TabelHander {
   /**
    * 点击form的按钮查询，可通过@click="tableNameHandler.query"被调用
    */
-  query() {
+  query = () => {
     this.currentPage = 1
     this.getList()
   }
@@ -414,8 +407,9 @@ export default class TabelHander {
    * 重置，可通过@click="tableNameHandler.reset"被调用
    * 注意：如果用户需要额外重置，用户可以设置tableNameExtraReset方法，方法无参数，用户可以在此方法中对表单进行额外的reset处理
    */
-  reset() {
+  reset = () => {
     this._getVueValue('VUE_QueryFormRef').resetFields()
+
     //额外重置的属性
     let extraReset = this._getVueValue('VUE_METHOD_ExtraResetPath')
     if (extraReset) {
@@ -432,7 +426,7 @@ export default class TabelHander {
    * @param {*} data
    * @param {*} readOnly
    */
-  openCreateOrUpdate(data, readOnly = false) {
+  openCreateOrUpdate = (data, readOnly = false) => {
     if (!this._getVueValue('VUE_CreateOrUpdateRef')) {
       console.warn('[TableHander] please set the createOrUpdateRef:', this.VUE_CreateOrUpdateRef)
       return
@@ -444,7 +438,7 @@ export default class TabelHander {
    * 删除多行数据，询问并调用api
    * @param {*} options
    */
-  deleteSelectedRowsData(options = this.options) {
+  deleteSelectedRowsData = (options = this.options) => {
     if (this.tableSelection.length === 0) {
       this.vueInstance.$message.warning('请选择要删除的数据')
       return
@@ -472,7 +466,7 @@ export default class TabelHander {
    * @param {*} row
    * @param {*} options
    */
-  deleteRowData(row, options = this.options) {
+  deleteRowData = (row, options = this.options) => {
     let id = row[options.tableIdPath]
     this.vueInstance.$confirm(`确定删除这条数据吗?`, '提示', {
       confirmButtonText: '确定',
@@ -488,7 +482,7 @@ export default class TabelHander {
    * @param {*} ids
    * @param {*} options
    */
-  async deleteRowDataByApi(ids, options = this.options) {
+  deleteRowDataByApi = async (ids, options = this.options) => {
     let deleteApi = options.deleteApi
     if (deleteApi) {
       console.log('ids', ids, options.singleDeleteIdUseArray, _.isString(ids))
@@ -515,7 +509,7 @@ export default class TabelHander {
    * @param {*} defaultValue
    * @returns
    */
-  _getVueValue(name, defaultValue = null) {
+  _getVueValue = (name, defaultValue = null) => {
     if (!name) {
       throw new Error('[TableHander] name is not set')
     }
@@ -531,7 +525,7 @@ export default class TabelHander {
    * @param {*} name
    * @param {*} value
    */
-  _setVueValue(name, value) {
+  _setVueValue = (name, value) => {
     if (!this.vueInstance) {
       console.warn('[TableHander] vueInstance is not set')
       return
@@ -544,7 +538,7 @@ export default class TabelHander {
    * @param {*} list
    * @returns
    */
-  _handleTableData(list) {
+  _handleTableData = (list) => {
     //用lodash给每一个数据添加一个id
     _.forEach(list, (item, index) => {
       item._TableMixinsId = _.uniqueId('TID_')

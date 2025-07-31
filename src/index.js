@@ -1,12 +1,8 @@
-import Vue from 'vue'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import _ from 'lodash'
-
-// 导入组件
 import Form from './components/Form'
 import Select from './components/Select'
 import TableHander from './components/TableHander'
+import TableMixins from './components/TableHander/TableMixins'
+import { TableGlobalConfig } from './components/TableHander/TableGlobalConfig'
 
 // 组件列表
 const components = [
@@ -30,14 +26,7 @@ const install = function(Vue) {
   Vue.use(TableHander)
 }
 
-// 判断是否直接引入文件
-if (typeof window !== 'undefined' && window.Vue) {
-  install(window.Vue)
-}
-
-export default {
-  install,
-  Select,
-  Form,
-  TableHander
-} 
+// 支持全量引入
+export default { install, Form, Select, TableHander, TableMixins, TableGlobalConfig }
+// 支持按需引入
+export { Form, Select, TableHander, TableMixins, TableGlobalConfig } 

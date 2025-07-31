@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import TableHander from './TabelHander';
-import TableHandlerConfig from './TableHandlerConfig';
 
 // 工厂函数，为每个组件创建独立的 mixin
 export default function tableMixin(config) {
@@ -9,11 +8,9 @@ export default function tableMixin(config) {
   let _TableQueryFrom = {};
   let _TableQueryFromRef = {};
 
-  // 初始化配置，合并全局默认配置
+  // 初始化配置
   _.forEach(config, (value, key) => {
-    // 合并全局默认配置和用户配置
-    const mergedOptions = TableHandlerConfig.mergeOptions(value);
-    _TableHandlers[key + 'Handler'] = new TableHander(key, mergedOptions);
+    _TableHandlers[key + 'Handler'] = new TableHander(key, value);
     _TableQueryFrom[key + 'QueryForm'] = {}
     _TableQueryFromRef[key + 'QueryFormRef'] = {}
   });
