@@ -20,7 +20,6 @@ export default function tableMixin(config) {
 
   return {
     mounted() {
-      console.log('mounted rrrrrrparams', this.sercieArea);
       _.forEach(_TableHandlers, (handler, key) => {
         handler.setVueInstance(this);
         handler.initInMount();

@@ -1,22 +1,21 @@
 {
   "name": "ch-components-web",
-  "version": "0.3.19",
+  "version": "0.3.21",
   "description": "基于 Vue 2.x + Element UI的桌面端组件库",
-  "main": "dist/ch-components-web.umd.js",
-  "module": "dist/ch-components-web.umd.js",
-  "unpkg": "dist/ch-components-web.umd.min.js",
-  "style": "dist/ch-components-web.css",
+  "main": "src/index.js",
+  "module": "src/index.js",
   "types": "index.d.ts",
   "files": [
-    "dist",
+    "src",
     "index.d.ts",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md"
+    "Docs/docs/CHANGELOG.md"
   ],
   "scripts": {
     "dev": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name ch-components-web src/index.js"
+    "build": "vue-cli-service build --target lib --name ch-components-web src/index.js",
+    "prepublishOnly": "echo 'Publishing source only (no build)'"
   },
   "engines": {
     "node": ">=14.0.0"

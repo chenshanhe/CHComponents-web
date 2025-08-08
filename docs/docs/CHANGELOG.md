@@ -1,5 +1,41 @@
 # 更新日志
 
+## [0.3.21] - 2025-08-08
+
+### 变更
+- 📦 改为“源码发布”：发布到 npm 时不再进行打包，直接发布 `src/` 源文件
+- 🔗 调整入口：`main` 与 `module` 均指向 `src/index.js`
+- 🧾 发布内容：通过 `files` 仅包含 `src/`、`index.d.ts`、`README.md`、`LICENSE` 与本更新日志
+
+> 下游应用可继续按原用法引用：
+> - 全量：`import CHComponentsWeb from 'ch-components-web'`
+> - 按需：`import { Select, Form, TableMixins, TableGlobalConfig } from 'ch-components-web'`
+> - 需要在下游应用中自行安装并注册 `element-ui`、`lodash`、`dayjs`（peerDependencies）
+
+---
+
+## [0.3.20] - 2025-08-08
+
+### 修复
+- 🐛 **修复打包后卡住的问题**：解决了生产环境构建后组件库无法正常使用的问题
+- 🔧 **修复缺少依赖导入**：在 `TabelHander.js` 中添加了缺失的 `lodash` 导入
+- 🚫 **移除错误的 ElementUI 依赖**：从 `src/index.js` 中移除了未导入的 `ElementUI` 引用
+- 🐛 **修复属性访问错误**：修复了 `TableMixins.js` 中的错误属性访问 `this.sercieArea`
+- ⚡ **优化打包配置**：改进了 `vue.config.js` 的构建配置，避免循环依赖问题
+
+### 优化
+- 📦 **优化构建流程**：改进了代码分割和依赖处理，提升打包性能
+- 🔧 **完善错误处理**：增强了异步操作的错误处理机制
+- 📝 **更新文档**：完善了使用说明和故障排除指南
+
+### 技术改进
+- 修复了 `lodash` 依赖在 `TabelHander.js` 中的缺失导入
+- 优化了 `TableMixins` 工厂函数的错误处理
+- 改进了 Vue 组件注册机制
+- 增强了生产环境的稳定性
+
+---
+
 ## [0.3.4] - 2025-07-17
 - 处理因为class#特殊写法导致的webpack报错的问题
 
